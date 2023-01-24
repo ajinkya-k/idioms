@@ -38,3 +38,4 @@ There are a few steps:
 
 - In the `tex` file where you intend to use the `ps` figure add the following in the header: `\usepackage{auto-pst-pdf}`.
 You may have to add the `-shell-escape` argument to the `latexmk` command when compiling the `tex` file where you use the figure.
+If using VS Code [this stackoverflow thread](https://tex.stackexchange.com/questions/516604/how-to-enable-shell-escape-or-write18-visual-studio-code-latex-workshop) explains how to add shell escape argument to `latexmk`.
