@@ -9,13 +9,12 @@ There are a few steps:
 
 
     ```latex
-
-        \beginpgfgraphicnamed{fig-name}
-            \begin{tikzpicture}
-                ...
-                ;
-            \end{tikzpicture}
-        \endpgfgraphicnamed
+    \beginpgfgraphicnamed{fig-name}
+        \begin{tikzpicture}
+            ...
+            ;
+        \end{tikzpicture}
+    \endpgfgraphicnamed
     ```
 
 - Next, we compile the latex to create a `fig-name.dvi` file
