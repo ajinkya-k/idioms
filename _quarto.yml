@@ -1,0 +1,14 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Useful Commands"
+  navbar:
+    right:
+      - text: Home
+        href: https://ajinkya-k.github.io/
+format:
+  html:
+    theme: cosmo
+    css: styles.css

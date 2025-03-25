@@ -1,5 +1,30 @@
 # LaTeX idioms
 
+## Shell script to remove LaTeX temp files
+
+Based on [this script](https://gist.github.com/djsutherland/266983#file-latex-clean-sh) by [Danica J. Sutherland](https://gist.github.com/djsutherland) which removes the temporary files created in the process of (pdf)LaTeX compilation, I made a similar one with minor modifications. I only added a few more extensions to remove and used the verbose option `-v` with the `rm` command to output which files are being delted to the standard output. 
+```bash
+exts="aux bbl blg brf idx ilg\
+ ind lof log lol lot nav out snm\
+ tdo toc synctex.gz fdb_latexmk fls"
+
+for x in "${@:-.}"; do
+    arg=$(echo ${x:-.} | perl -pe 's/\.(tex|pdf)$//')
+
+    if [[ -d "$arg" ]]; then
+        for ext in $exts; do
+             rm -vf "$arg"/*.$ext
+        done
+    else
+        for ext in $exts; do
+             rm -vf "$arg".$ext
+        done
+    fi
+done
+
+```
+
+
 ## Converting TikZ pictures to `.ps` files
 
 The following is based on [this note by Michael Goerz](https://michaelgoerz.net/notes/creating-eps-files-from-tikz.html#using-externalization). 
