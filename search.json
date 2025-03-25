@@ -1,0 +1,107 @@
+[
+  {
+    "objectID": "shell.html",
+    "href": "shell.html",
+    "title": "Useful Shell Commands",
+    "section": "",
+    "text": "When using bash, the following creates a list of files with their file sizes, and sort in ascending order of size.\ndu --human-readable -d1 | sort --human-numeric-sort\n(Source: somewhere on stackoverflow. Will update when I find it again)"
+  },
+  {
+    "objectID": "shell.html#file-sizes",
+    "href": "shell.html#file-sizes",
+    "title": "Useful Shell Commands",
+    "section": "",
+    "text": "When using bash, the following creates a list of files with their file sizes, and sort in ascending order of size.\ndu --human-readable -d1 | sort --human-numeric-sort\n(Source: somewhere on stackoverflow. Will update when I find it again)"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Useful Tools",
+    "section": "",
+    "text": "This page contains useful code, Linux utilities and tools that I use often. These “idioms” (h/t to Coleman Breen) are categorized by language (e.g. R), environments (e.g. bash, PowerShell) or other software (e.g. git)\nNote: A lot of these are edited versions of code found elsewhere. Sometimes they are exact copies reproduced in this repo for handy access. I point to the source (and/or inspiration) in each idiom’s description."
+  },
+  {
+    "objectID": "index.html#file-sizes",
+    "href": "index.html#file-sizes",
+    "title": "Useful Tools",
+    "section": "File sizes",
+    "text": "File sizes\nWhen using bash, the following creates a list of files with their file sizes, and sort in ascending order of size.\ndu --human-readable -d1 | sort --human-numeric-sort\n(Source: somewhere on stackoverflow. Will update when I find it again)"
+  },
+  {
+    "objectID": "index.html#shell-script-to-remove-latex-temp-files",
+    "href": "index.html#shell-script-to-remove-latex-temp-files",
+    "title": "Useful Tools",
+    "section": "Shell script to remove LaTeX temp files",
+    "text": "Shell script to remove LaTeX temp files\nBased on this script by Danica J. Sutherland which removes the temporary files created in the process of (pdf)LaTeX compilation, I made a similar one with minor modifications. I only added a few more extensions to remove and used the verbose option -v with the rm command to output which files are being delted to the standard output.\nexts=\"aux bbl blg brf idx ilg\\\n ind lof log lol lot nav out snm\\\n tdo toc synctex.gz fdb_latexmk fls\"\n\nfor x in \"${@:-.}\"; do\n    arg=$(echo ${x:-.} | perl -pe 's/\\.(tex|pdf)$//')\n\n    if [[ -d \"$arg\" ]]; then\n        for ext in $exts; do\n             rm -vf \"$arg\"/*.$ext\n        done\n    else\n        for ext in $exts; do\n             rm -vf \"$arg\".$ext\n        done\n    fi\ndone"
+  },
+  {
+    "objectID": "index.html#converting-tikz-pictures-to-.ps-files",
+    "href": "index.html#converting-tikz-pictures-to-.ps-files",
+    "title": "Useful Tools",
+    "section": "Converting TikZ pictures to .ps files",
+    "text": "Converting TikZ pictures to .ps files\nThe following is based on this note by Michael Goerz. There are a few steps:\n\nIn a latex file say fig-generator.tex make your tikzpicture (call it by any name, here we use fig-name) inside a pgfgraphicnamed environment as follows:\n\\beginpgfgraphicnamed{fig-name}\n    \\begin{tikzpicture}\n        ...\n        ;\n    \\end{tikzpicture}\n\\endpgfgraphicnamed\nNext, we compile the latex to create a fig-name.dvi file\nlatex --jobname=fig-name fig-generator.tex\nNow we convert the dvi file to an eps file:\ndvips -o fig-name.eps fig-name.dvi\nSometimes you will need a ps file instead of an eps file and a simple hack is to just change the file extension using mv (if you want to keep the eps file use cp instead of mv)\nmv fig-name.eps fig-name.ps\nIn the tex file where you intend to use the ps figure add the following in the header: \\usepackage{auto-pst-pdf}. You may have to add the -shell-escape argument to the latexmk command when compiling the tex file where you use the figure. If using VS Code this stackoverflow thread explains how to add shell escape argument to latexmk."
+  },
+  {
+    "objectID": "index.html#parallelization",
+    "href": "index.html#parallelization",
+    "title": "Useful Tools",
+    "section": "Parallelization",
+    "text": "Parallelization\nThe foreach library doesn’t allow side-effects or manipulating shared objects (at least I don’t know how to do it). Suppose we want to generate two matrices of size \\(m \\times n\\) using a parallelized loop, here’s how to do it:\n\nFirst we define a combination function, and then we use it in for each with .multicombine = TRUE.\nThis draws very heavily from a stack overflow answer.\n# combination function\ncomb &lt;- function(...) {\n    mapply(\"rbind\", ..., SIMPLIFY = FALSE)\n}\n\n# sample usage\nresult &lt;- foreach(i=1:m, .combine='comb', .multicombine=TRUE) %dopar% {\n    m1_row &lt;- rep(i, n)\n    m2_row &lt;- rep(i, n)\n    names(m1_row) &lt;- paste0(\"a\", as.character(1:n)) # with `rbind` creates a matrix with column names\n    list(m1_row, m2_row)\n}\n\nresult[[1]] #returns a matrix with colnames a1, a2, ...\nresult[[2]] #returns a matrix with same values but no colnames"
+  },
+  {
+    "objectID": "index.html#pdf-without-active-content",
+    "href": "index.html#pdf-without-active-content",
+    "title": "Useful Tools",
+    "section": "PDF without active content",
+    "text": "PDF without active content\nSometimes online forms reqiure a PDF that does not have active content. The following snippet taken from a stackoverflow answer generates a PDF that has no active contents using GhostScript (gs command on macOS and other UNIX equivalents)\ngs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=pdf-inactive.pdf -dBATCH input-pdf.pdf"
+  },
+  {
+    "objectID": "r_idioms.html",
+    "href": "r_idioms.html",
+    "title": "R idioms",
+    "section": "",
+    "text": "The foreach library doesn’t allow side-effects or manipulating shared objects (at least I don’t know how to do it). Suppose we want to generate two matrices of size \\(m \\times n\\) using a parallelized loop, here’s how to do it:\n\nFirst we define a combination function, and then we use it in for each with .multicombine = TRUE.\nThis draws very heavily from a stack overflow answer.\n# combination function\ncomb &lt;- function(...) {\n    mapply(\"rbind\", ..., SIMPLIFY = FALSE)\n}\n\n# sample usage\nresult &lt;- foreach(i=1:m, .combine='comb', .multicombine=TRUE) %dopar% {\n    m1_row &lt;- rep(i, n)\n    m2_row &lt;- rep(i, n)\n    names(m1_row) &lt;- paste0(\"a\", as.character(1:n)) # with `rbind` creates a matrix with column names\n    list(m1_row, m2_row)\n}\n\nresult[[1]] #returns a matrix with colnames a1, a2, ...\nresult[[2]] #returns a matrix with same values but no colnames"
+  },
+  {
+    "objectID": "r_idioms.html#parallelization",
+    "href": "r_idioms.html#parallelization",
+    "title": "R idioms",
+    "section": "",
+    "text": "The foreach library doesn’t allow side-effects or manipulating shared objects (at least I don’t know how to do it). Suppose we want to generate two matrices of size \\(m \\times n\\) using a parallelized loop, here’s how to do it:\n\nFirst we define a combination function, and then we use it in for each with .multicombine = TRUE.\nThis draws very heavily from a stack overflow answer.\n# combination function\ncomb &lt;- function(...) {\n    mapply(\"rbind\", ..., SIMPLIFY = FALSE)\n}\n\n# sample usage\nresult &lt;- foreach(i=1:m, .combine='comb', .multicombine=TRUE) %dopar% {\n    m1_row &lt;- rep(i, n)\n    m2_row &lt;- rep(i, n)\n    names(m1_row) &lt;- paste0(\"a\", as.character(1:n)) # with `rbind` creates a matrix with column names\n    list(m1_row, m2_row)\n}\n\nresult[[1]] #returns a matrix with colnames a1, a2, ...\nresult[[2]] #returns a matrix with same values but no colnames"
+  },
+  {
+    "objectID": "latex.html",
+    "href": "latex.html",
+    "title": "LaTeX idioms",
+    "section": "",
+    "text": "Based on this script by Danica J. Sutherland which removes the temporary files created in the process of (pdf)LaTeX compilation, I made a similar one with minor modifications. I only added a few more extensions to remove and used the verbose option -v with the rm command to output which files are being delted to the standard output.\nexts=\"aux bbl blg brf idx ilg\\\n ind lof log lol lot nav out snm\\\n tdo toc synctex.gz fdb_latexmk fls\"\n\nfor x in \"${@:-.}\"; do\n    arg=$(echo ${x:-.} | perl -pe 's/\\.(tex|pdf)$//')\n\n    if [[ -d \"$arg\" ]]; then\n        for ext in $exts; do\n             rm -vf \"$arg\"/*.$ext\n        done\n    else\n        for ext in $exts; do\n             rm -vf \"$arg\".$ext\n        done\n    fi\ndone\n\n\n\nThe following is based on this note by Michael Goerz. There are a few steps:\n\nIn a latex file say fig-generator.tex make your tikzpicture (call it by any name, here we use fig-name) inside a pgfgraphicnamed environment as follows:\n\\beginpgfgraphicnamed{fig-name}\n    \\begin{tikzpicture}\n        ...\n        ;\n    \\end{tikzpicture}\n\\endpgfgraphicnamed\nNext, we compile the latex to create a fig-name.dvi file\nlatex --jobname=fig-name fig-generator.tex\nNow we convert the dvi file to an eps file:\ndvips -o fig-name.eps fig-name.dvi\nSometimes you will need a ps file instead of an eps file and a simple hack is to just change the file extension using mv (if you want to keep the eps file use cp instead of mv)\nmv fig-name.eps fig-name.ps\nIn the tex file where you intend to use the ps figure add the following in the header: \\usepackage{auto-pst-pdf}. You may have to add the -shell-escape argument to the latexmk command when compiling the tex file where you use the figure. If using VS Code this stackoverflow thread explains how to add shell escape argument to latexmk."
+  },
+  {
+    "objectID": "latex.html#shell-script-to-remove-latex-temp-files",
+    "href": "latex.html#shell-script-to-remove-latex-temp-files",
+    "title": "LaTeX idioms",
+    "section": "",
+    "text": "Based on this script by Danica J. Sutherland which removes the temporary files created in the process of (pdf)LaTeX compilation, I made a similar one with minor modifications. I only added a few more extensions to remove and used the verbose option -v with the rm command to output which files are being delted to the standard output.\nexts=\"aux bbl blg brf idx ilg\\\n ind lof log lol lot nav out snm\\\n tdo toc synctex.gz fdb_latexmk fls\"\n\nfor x in \"${@:-.}\"; do\n    arg=$(echo ${x:-.} | perl -pe 's/\\.(tex|pdf)$//')\n\n    if [[ -d \"$arg\" ]]; then\n        for ext in $exts; do\n             rm -vf \"$arg\"/*.$ext\n        done\n    else\n        for ext in $exts; do\n             rm -vf \"$arg\".$ext\n        done\n    fi\ndone"
+  },
+  {
+    "objectID": "latex.html#converting-tikz-pictures-to-.ps-files",
+    "href": "latex.html#converting-tikz-pictures-to-.ps-files",
+    "title": "LaTeX idioms",
+    "section": "",
+    "text": "The following is based on this note by Michael Goerz. There are a few steps:\n\nIn a latex file say fig-generator.tex make your tikzpicture (call it by any name, here we use fig-name) inside a pgfgraphicnamed environment as follows:\n\\beginpgfgraphicnamed{fig-name}\n    \\begin{tikzpicture}\n        ...\n        ;\n    \\end{tikzpicture}\n\\endpgfgraphicnamed\nNext, we compile the latex to create a fig-name.dvi file\nlatex --jobname=fig-name fig-generator.tex\nNow we convert the dvi file to an eps file:\ndvips -o fig-name.eps fig-name.dvi\nSometimes you will need a ps file instead of an eps file and a simple hack is to just change the file extension using mv (if you want to keep the eps file use cp instead of mv)\nmv fig-name.eps fig-name.ps\nIn the tex file where you intend to use the ps figure add the following in the header: \\usepackage{auto-pst-pdf}. You may have to add the -shell-escape argument to the latexmk command when compiling the tex file where you use the figure. If using VS Code this stackoverflow thread explains how to add shell escape argument to latexmk."
+  },
+  {
+    "objectID": "docs.html",
+    "href": "docs.html",
+    "title": "Document related scripts",
+    "section": "",
+    "text": "Sometimes online forms reqiure a PDF that does not have active content. The following snippet taken from a stackoverflow answer generates a PDF that has no active contents using GhostScript (gs command on macOS and other UNIX equivalents)\ngs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=pdf-inactive.pdf -dBATCH input-pdf.pdf"
+  },
+  {
+    "objectID": "docs.html#pdf-without-active-content",
+    "href": "docs.html#pdf-without-active-content",
+    "title": "Document related scripts",
+    "section": "",
+    "text": "Sometimes online forms reqiure a PDF that does not have active content. The following snippet taken from a stackoverflow answer generates a PDF that has no active contents using GhostScript (gs command on macOS and other UNIX equivalents)\ngs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=pdf-inactive.pdf -dBATCH input-pdf.pdf"
+  }
+]
